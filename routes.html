@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>慢行站路线对比 - 智慧学习平台</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/compare.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <h1>智慧学习</h1>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="courses.html">课程中心</a></li>
+                <li><a href="plan.html">学习计划</a></li>
+                <li><a href="resources.html">学习资源</a></li>
+                <li><a href="routes.html" class="active">慢行站</a></li>
+                <li><a href="profile.html">个人中心</a></li>
+                <li><a href="about.html">关于我们</a></li>
+                <li><a href="contact.html">联系我们</a></li>
+            </ul>
+            <div class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 页面标题 -->
+    <section class="page-header">
+        <div class="container">
+            <h1>慢行站路线对比</h1>
+            <p>距离、时长、树荫、补给、难度，一目了然；口径清晰，可比才比较</p>
+        </div>
+    </section>
+
+    <!-- 口径与政策说明 -->
+    <section class="container">
+        <div class="cmp-notes">
+            <strong>📐 比较规则说明</strong>
+            <ul>
+                <li><strong>口径不可混排</strong>：时长口径＝交通方式 × 估算模型；树荫覆盖口径＝季节 × 采样方法。口径不同的数值不直接排序，页面会分组标注。</li>
+                <li><strong>缺值 ≠ 零值</strong>：「暂无数据」表示尚未调查（缺值），不参与排序；「0」是真实零值（如全程无补给点），正常参与比较。</li>
+                <li><strong>取数政策</strong>：「同一时点快照」让所有路线取同一时点之前的公开版本；「各取最新」让每条路线各取当前最新公开版本。卡片、抽屉与导出报告始终使用同一组参数与证据。</li>
+                <li><strong>版本固定</strong>：比较 API 固定每条路线的公开版本；分享链接只编码公开选择，个人备注草稿仅通过账号同步。</li>
+                <li><strong>占位保护</strong>：已撤回或删除的路线保留占位与原因，不会用另一条同名路线代替。</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- 工具条：取数政策 + 操作 -->
+    <section class="container">
+        <div class="cmp-toolbar">
+            <div class="policy-switch">
+                <span class="policy-label">取数政策</span>
+                <label class="policy-option">
+                    <input type="radio" name="policy" value="snapshot" checked> 同一时点快照
+                </label>
+                <label class="policy-option">
+                    <input type="radio" name="policy" value="latest"> 各取最新
+                </label>
+                <span id="snapshotTools">
+                    <button class="cbtn" id="refreshSnapshot" title="以当前时刻作为新的快照时点重新取数">⟳ 更新快照时点</button>
+                </span>
+            </div>
+            <div class="toolbar-actions">
+                <button class="cbtn" id="shareBtn" title="复制链接（仅编码公开选择）">🔗 分享</button>
+                <button class="cbtn" id="exportBtn" title="导出 Markdown 对比报告">📄 导出报告</button>
+                <button class="cbtn cbtn-primary" id="saveBtn" title="保存选择集合到账号（保存前重新校验路线状态）">💾 保存到账号</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 筛选 -->
+    <section class="cmp-filter">
+        <div class="container">
+            <div class="filter-tabs" id="filterBtns">
+                <button class="filter-btn active" data-tag="all">全部</button>
+                <button class="filter-btn" data-tag="walk">步行</button>
+                <button class="filter-btn" data-tag="bike">骑行</button>
+                <button class="filter-btn" data-tag="ebike">电助力</button>
+                <button class="filter-btn" data-tag="family">亲子</button>
+            </div>
+            <div class="filter-search">
+                <input type="text" id="searchInput" placeholder="搜索路线名称、区域…">
+            </div>
+        </div>
+    </section>
+
+    <!-- 路线卡片 -->
+    <section class="container">
+        <div class="route-grid" id="cardGrid"></div>
+    </section>
+
+    <!-- 演示控制台（验收辅助） -->
+    <section class="container">
+        <details class="demo-console">
+            <summary>🧪 演示控制台（模拟服务端变更，用于验收）</summary>
+            <div class="demo-btns">
+                <button class="cbtn" id="demoWithdraw">撤回 滨江绿道 v3</button>
+                <button class="cbtn" id="demoRepublish">恢复 滨江绿道 v3</button>
+                <button class="cbtn" id="demoPublish">发布 湖畔骑行道 新版本</button>
+                <button class="cbtn" id="demoRemote">模拟另一设备修改集合</button>
+            </div>
+            <p>提示：撤回操作可验证「保存时路线撤回」「占位保留」；发布新版本可验证「新版本提示」；「模拟另一设备」与真实开两个标签页修改（storage 事件）走同一处理路径。旧分享链接可试：<code>?c=r001@1,r006@1,r007&p=latest</code>（含已撤回、已删除与同名路线）。</p>
+        </details>
+    </section>
+
+    <!-- 对比浮条 -->
+    <div class="compare-bar" id="compareBar">
+        <span class="compare-count" id="compareCount"></span>
+        <span class="compare-hidden" id="compareHidden"></span>
+        <button class="cbtn cbtn-primary" id="openDrawer">打开对比抽屉</button>
+        <button class="cbtn" id="clearCompare">清空</button>
+    </div>
+
+    <!-- 抽屉 -->
+    <div class="cmp-overlay" id="overlay"></div>
+    <aside class="cmp-drawer" id="drawer" aria-label="路线对比抽屉">
+        <div class="drawer-head">
+            <h2>路线对比</h2>
+            <button class="drawer-close" id="closeDrawer" title="关闭">✕</button>
+            <div class="drawer-evidence" id="evidence"></div>
+        </div>
+        <div class="drawer-body" id="drawerBody"></div>
+    </aside>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>智慧学习平台</h3>
+                    <p>致力于打造最优质的在线学习体验，帮助每个人实现学习目标，提升职业竞争力。</p>
+                </div>
+                <div class="footer-section">
+                    <h4>快速链接</h4>
+                    <ul>
+                        <li><a href="courses.html">课程中心</a></li>
+                        <li><a href="plan.html">学习计划</a></li>
+                        <li><a href="resources.html">学习资源</a></li>
+                        <li><a href="routes.html">慢行站</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>联系我们</h4>
+                    <ul>
+                        <li>📧 info@smartlearn.com</li>
+                        <li>📱 400-888-8888</li>
+                        <li>📍 北京市朝阳区科技园</li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>关注我们</h4>
+                    <div class="social-links">
+                        <a href="#" title="微信">WeChat</a>
+                        <a href="#" title="微博">Weibo</a>
+                        <a href="#" title="B站">Bilibili</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 智慧学习平台 版权所有 | 京ICP备12345678号 | 网站地图 | 隐私政策</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+    <script src="js/routes-data.js"></script>
+    <script src="js/compare-api.js"></script>
+    <script src="js/compare-store.js"></script>
+    <script src="js/compare-ui.js"></script>
+</body>
+</html>

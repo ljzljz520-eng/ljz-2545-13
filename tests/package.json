@@ -1,0 +1,11 @@
+{
+  "name": "slowwalk-compare-tests",
+  "private": true,
+  "description": "慢行站路线对比功能测试（logic/viewmodel 无依赖，e2e 需 jsdom）",
+  "scripts": {
+    "test": "node logic.test.js && node viewmodel.test.js && node e2e.test.js"
+  },
+  "devDependencies": {
+    "jsdom": "^24.0.0"
+  }
+}
