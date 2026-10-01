@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>慢行站 · 路线对比</title>
+  <link rel="stylesheet" href="/css/app.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">🚲</span>
+      <div>
+        <h1>慢行站 · 路线对比</h1>
+        <p class="subtitle">距离 · 时长 · 树荫 · 补给 · 难度 —— 口径可解释，版本可追溯</p>
+      </div>
+    </div>
+    <div class="account">
+      <label>账号（草稿同步）
+        <input id="accountInput" type="text" placeholder="如 tester-a，留空用本机账号" />
+      </label>
+      <span id="syncState" class="sync-state">未同步</span>
+    </div>
+  </header>
+
+  <main class="layout">
+    <!-- 左：路线卡片与过滤 -->
+    <section class="card-pane">
+      <div class="prefs-bar">
+        <label>交通方式
+          <select id="transportSel">
+            <option value="walk">步行</option>
+            <option value="bike">骑行</option>
+          </select>
+        </label>
+        <label>树荫季节
+          <select id="seasonSel">
+            <option value="summer">夏季（盛叶）</option>
+            <option value="winter">冬季（落叶）</option>
+          </select>
+        </label>
+        <label>路线状态
+          <select id="statusFilter">
+            <option value="available">可用 + 已撤回</option>
+            <option value="all">全部（含已删除）</option>
+            <option value="published">仅可用</option>
+            <option value="withdrawn">仅已撤回</option>
+            <option value="deleted">仅已删除</option>
+          </select>
+        </label>
+        <label>最少补给
+          <input id="minSupplies" type="number" min="0" step="1" value="0" style="width:5.5rem" />
+        </label>
+        <input id="qFilter" type="search" placeholder="按路线名搜索…" style="flex:1;min-width:8rem" />
+      </div>
+      <p class="filter-note" id="filterNote"></p>
+      <div id="routeCards" class="route-cards" aria-live="polite"></div>
+    </section>
+
+    <!-- 右：对比抽屉 -->
+    <aside id="drawer" class="drawer" aria-label="路线对比抽屉">
+      <div class="drawer-head">
+        <h2>路线对比抽屉</h2>
+        <span id="compareCount" class="count-badge">0</span>
+      </div>
+
+      <div class="policy-box">
+        <div class="policy-row">
+          <span class="policy-label">取数政策</span>
+          <div class="seg" role="tablist">
+            <button type="button" data-policy="latest" class="seg-btn">各取最新</button>
+            <button type="button" data-policy="snapshot" class="seg-btn">同一时点快照</button>
+          </div>
+        </div>
+        <p id="policyDesc" class="policy-desc"></p>
+        <p id="snapshotAsOf" class="asof" hidden></p>
+      </div>
+
+      <div class="drawer-actions">
+        <button id="pinCurrentBtn" type="button" class="btn ghost" title="把当前集合的最新版本固定为公开版本（快照）">固定当前为快照版本</button>
+        <button id="exportBtn" type="button" class="btn primary">导出对比报告</button>
+        <button id="copyLinkBtn" type="button" class="btn">复制公开分享链接</button>
+      </div>
+
+      <div id="versionBanner" class="version-banner" hidden></div>
+      <div id="withdrawnBanner" class="withdrawn-banner" hidden></div>
+
+      <div class="table-scroll">
+        <table id="compareTable" class="compare-table">
+          <thead id="compareHead"></thead>
+          <tbody id="compareBody"></tbody>
+        </table>
+      </div>
+
+      <div class="incomparable-note">
+        <h3>不可比项说明</h3>
+        <ul id="incomparableList"></ul>
+        <p class="hint">缺值（无数据）与零值（实测为 0）严格分开；不同口径字段不直接排序。
+          时长随交通方式与估算模型变化，树荫覆盖率随季节与采样方法变化。</p>
+      </div>
+    </aside>
+  </main>
+
+  <!-- 全局提示 -->
+  <div id="toastStack" class="toast-stack" aria-live="assertive"></div>
+
+  <!-- 验收演示工具（仅演示/测试环境） -->
+  <details class="demo-panel">
+    <summary>🛠 验收演示操作（撤回/恢复/删除/新版本/重置）</summary>
+    <div class="demo-grid">
+      <button data-demo="withdraw-r3" type="button">撤回 r3 滨江短驳线</button>
+      <button data-demo="restore-r3" type="button">恢复 r3</button>
+      <button data-demo="delete-r2" type="button">删除 r2</button>
+      <button data-demo="newversion-r2" type="button">为 r2 发布新版本</button>
+      <button data-demo="reset" type="button">重置全部数据</button>
+    </div>
+    <p class="hint">两个浏览器/隐身窗口使用不同账号即可模拟“两设备”；或用账号 tester-a / tester-b 交叉验证。</p>
+  </details>
+
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>
